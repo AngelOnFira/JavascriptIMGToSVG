@@ -19,7 +19,6 @@
 	        // Fetch the sources
 	        var resKeys = Object.keys(fetchedURL);
 	        for(var i = 0; i < resKeys.length; i++){
-	        	var isLast = i === resKeys.length - 1;
 	        	replaceImg(resKeys[i]);
 	        }
 
@@ -27,7 +26,6 @@
 
 	        function waitTillEmpty(object){
 	        	if(Object.keys(object).length === 0){
-	        		// The last image has been loaded
 	        		clearInterval(global.svgConverter.interval);
 		            if(globalCall){
 		            	globalCall();
@@ -35,15 +33,14 @@
 	        	}
 	        }
 
-
-	        // Pass a callback to 
+	        // Replace the images for the URL
 	        function replaceImg(svgURL){
 	            fetch(svgURL).then(function(response) {
 	                return response.text();
 	            }).then(function(svg) {
-	                delete this.fetchedURL[svgURL];
+	                delete this.fetchedURL[svgURL]; //Remove the fetched url
 
-	                // Replace all 
+	                // Replace all the images for the src
 	                var matches = document.querySelectorAll('img.svg');
 	                for(var i = 0; i < matches.length; i++){
 	                	if(matches[i].src.localeCompare(svgURL) === 0){
@@ -51,14 +48,14 @@
 	                        $img.innerHTML = svg;
 	                        var svgHTML = $img.getElementsByTagName('svg')[0];
 
+	                        // Pass values onto svg tag
 	                		if(matches[i].className)
 	                            svgHTML.className.baseVal = matches[i].className;
 
 	                        if(matches[i].id)
 	                            svgHTML.id = matches[i].id;
 
-
-	                        // var clone = JSON.parse(JSON.stringify(svgHTML));
+	                        // Replace img with svg
 		                	matches[i].parentNode.replaceChild(svgHTML, matches[i]);
 		                }
 	                }
